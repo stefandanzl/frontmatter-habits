@@ -3,51 +3,51 @@
 version: '3'
 
 vars:
-  FILES: 'main.js styles.css manifest.json'
-  VERSION:
-    sh: node -e "console.log(require('./package.json').version)"
+    FILES: 'main.js styles.css manifest.json'
+    VERSION:
+        sh: node -e "console.log(require('./package.json').version)"
 
-  PLUGIN_DIR: 'C:/PROJECTS/OBSIDIAN/hirn/.obsidian/plugins/frontmatter-habits'
+    PLUGIN_DIR: 'C:/PROJECTS/OBSIDIAN/hirn/.obsidian/plugins/frontmatter-habits'
 
 tasks:
-  default: task -a
+    default: task -a
 
-  dev: npm run dev
+    dev: npm run dev
 
-  build: npm run build
+    build: npm run build
 
-  cp:
-    desc: 'Copy files to your specified Obsidian plugin directory'
-    cmds:
-      - cp manifest.json {{.PLUGIN_DIR}}/.
-      - cp main.js {{.PLUGIN_DIR}}/.
-      - cp styles.css {{.PLUGIN_DIR}}/.
+    cp:
+        desc: 'Copy files to your specified Obsidian plugin directory'
+        cmds:
+            - cp manifest.json {{.PLUGIN_DIR}}/.
+            - cp main.js {{.PLUGIN_DIR}}/.
+            - cp styles.css {{.PLUGIN_DIR}}/.
 
-  bump:
-    desc: 'Commit Changes and bump minor version'
-    cmds:
-      - git add .
-      - cmd: git commit -m "bump"
-        ignore_error: true
-      - npm version minor
-      - npm run version
+    bump:
+        desc: 'Commit Changes and bump minor version'
+        cmds:
+            - git add .
+            - cmd: git commit -m "bump"
+              ignore_error: true
+            - npm version minor
+            - npm run version
 
-  release:
-    desc: 'Commit Changes, create version tag, push to Github and create a new release on GitHub'
-    cmds:
-      - task: build
-      - git add .
-      - cmd: git commit -m "{{.VERSION}} Commit"
-        ignore_error: true
-      # - git tag {{.VERSION}}
-      - git push
-      - git push --tags
-      - task: release-create
+    release:
+        desc: 'Commit Changes, create version tag, push to Github and create a new release on GitHub'
+        cmds:
+            - task: build
+            - git add .
+            - cmd: git commit -m "{{.VERSION}} Commit"
+              ignore_error: true
+            # - git tag {{.VERSION}}
+            - git push
+            - git push --tags
+            - task: release-create
 
-  release-create:
-    cmds:
-      - gh release create {{.VERSION}} --title "{{.VERSION}}" --notes "New release of the Web Bookmarks plugin for Obsidian." {{.FILES}}
+    release-create:
+        cmds:
+            - gh release create {{.VERSION}} --title "{{.VERSION}}" --notes "New release of the Web Bookmarks plugin for Obsidian." {{.FILES}}
 
-  test:
-    cmds:
-      - echo {{.VERSION}}
+    test:
+        cmds:
+            - echo {{.VERSION}}
