@@ -1,7 +1,7 @@
 import {Plugin} from 'obsidian'
-import HabitTracker from './HabitTracker'
+import HabitTracker from './tracker'
 
-const PLUGIN_NAME = 'Habit Tracker 21'
+const PLUGIN_NAME = 'Frontmatter Habits'
 
 export default class HabitTracker21 extends Plugin {
 	async onload() {
