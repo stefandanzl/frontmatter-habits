@@ -12,9 +12,14 @@ export interface HabitTrackerSettings {
 	lastDisplayedDate: string;
 	daysToShow: number;
 	daysToLoad: number;
-	rootElement: HTMLDivElement | undefined;
+	rootElement: HTMLElement | undefined;
 	habitsGoHere: HTMLDivElement | undefined;
 	debug: number;
+    // Daily notes settings
+    useDailyNotes: boolean;
+    dailyNotesBasePath: string;
+    dailyNotesFormat: string;
+    habitFrontmatterKey: string;
 }
 
 export const DEFAULT_SETTINGS = (): HabitTrackerSettings => ({
@@ -25,14 +30,28 @@ export const DEFAULT_SETTINGS = (): HabitTrackerSettings => ({
 	rootElement: undefined,
 	habitsGoHere: undefined,
 	debug: 0,
+    // Default daily notes settings
+    useDailyNotes: false,
+    dailyNotesBasePath: 'Journal',
+    dailyNotesFormat: 'YYYY/YYYY-MM/YYYY-MM-DD ddd',
+    habitFrontmatterKey: 'habits',
 });
 
-export const ALLOWED_USER_SETTINGS = ['path', 'lastDisplayedDate', 'daysToShow', 'debug'];
+export const ALLOWED_USER_SETTINGS = [
+    'path', 
+    'lastDisplayedDate', 
+    'daysToShow', 
+    'debug',
+    'useDailyNotes',
+    'dailyNotesBasePath',
+    'dailyNotesFormat',
+    'habitFrontmatterKey'
+];
 
 export function removePrivateSettings(userSettings: any) {
     const result = {};
     ALLOWED_USER_SETTINGS.forEach((key) => {
-        if (userSettings[key]) {
+        if (userSettings[key] !== undefined) {
             result[key] = userSettings[key];
         }
     });
