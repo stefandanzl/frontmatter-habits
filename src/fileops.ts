@@ -78,6 +78,34 @@ export function extractDateFromPath(path: string, settings: HabitTrackerSettings
     }
 }
 
+/**
+ * Generate an array of daily note file paths for a range of days counting backwards from a given date
+ * @param date The starting date
+ * @param daysCount Number of days to include (including the start date)
+ * @param settings The settings containing format and base path
+ * @returns Array of file paths for each day
+ */
+export function getDailyNotePaths(date: Date, daysCount: number, settings: {dailyNotesFormat: string; dailyNotesBasePath: string}): string[] {
+    const paths: string[] = []
+    const currentDate = new Date(date)
+
+    for (let i = 0; i < daysCount; i++) {
+        // Create a moment object from the date
+        const momentDate = moment(currentDate)
+
+        // Format the path using the settings
+        const formattedDate = momentDate.format(settings.dailyNotesFormat)
+        const fullPath = `${settings.dailyNotesBasePath}/${formattedDate}.md`
+
+        // Add to the array
+        paths.push(fullPath)
+
+        // Move to the previous day
+        currentDate.setDate(currentDate.getDate() - 1)
+    }
+    return paths
+}
+
 export function formatDatePath(date: moment.Moment, settings: HabitTrackerSettings): string {
     try {
         const formattedDate = date.format(settings.dailyNotesFormat)
@@ -97,13 +125,7 @@ export async function getFrontmatter(app: App, path: string) {
     }
 
     try {
-        return await app.vault.read(file).then((result) => {
-            const frontmatter = result.split('---')[1]
-
-            if (!frontmatter) return {}
-
-            return parseYaml(frontmatter)
-        })
+        return await this.app.metadataCache.getFileCache(file)?.frontmatter
     } catch (error) {
         return {}
     }

@@ -1,4 +1,4 @@
-import {App, Notice, parseYaml, TAbstractFile, TFile} from 'obsidian'
+import {App, Notice, parseYaml, TAbstractFile, TFile, moment, TFolder} from 'obsidian'
 import {PLUGIN_NAME} from './settings'
 
 export function getTodayDate() {
@@ -75,4 +75,44 @@ export function findStreak(entries: string[], date: Date) {
     }
 
     return streak.toString()
+}
+
+/**
+ * Parse a date from the current active file's filename using the moment.js format.
+ * Handles full path format strings like "YYYY/YYYY-MM/YYYY-MM-DD dd" and extracts
+ * just the filename part for parsing.
+ * 
+ * @param app - The Obsidian app instance
+ * @param pathFormat - A full path format string that includes the filename format at the end
+ * @returns The parsed date as a moment object or null if parsing failed
+ */
+export function parseDateFromFilename(app: App, pathFormat: string = 'YYYY-MM-DD') {
+    const activeFile = app.workspace.getActiveFile();
+    
+    if (!activeFile) {
+        new Notice(`${PLUGIN_NAME}: No file is currently open`);
+        return null;
+    }
+    
+    const filename = activeFile.basename;
+    
+    try {
+        // Extract the filename format from the path format
+        // This gets the last part of the path after the last '/' character
+        const formatParts = pathFormat.split('/');
+        const filenameFormat = formatParts[formatParts.length - 1];
+        
+        // Try to parse the filename using the extracted format
+        const date = moment(filename, filenameFormat, true); // strict parsing
+        
+        if (date.isValid()) {
+            return date;
+        } else {
+            new Notice(`${PLUGIN_NAME}: Could not parse date from filename "${filename}" using format "${filenameFormat}"`);
+            return null;
+        }
+    } catch (error) {
+        new Notice(`${PLUGIN_NAME}: Error parsing date: ${error.message}`);
+        return null;
+    }
 }
