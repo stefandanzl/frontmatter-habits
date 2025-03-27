@@ -1,4 +1,4 @@
-import {App, Notice, parseYaml, TAbstractFile, TFile, moment} from 'obsidian'
+import {App, Notice, TAbstractFile, TFile, moment} from 'obsidian' //parseYaml,
 import {PLUGIN_NAME, HabitTrackerSettings} from './settings'
 
 export function loadFiles(app: App, settings: HabitTrackerSettings) {
@@ -143,7 +143,7 @@ export async function getHabitEntries(app: App, path: string, settings: HabitTra
             const fileDate = extractDateFromPath(path, settings)
             if (!fileDate) return []
 
-            const fileDateStr = fileDate.format('YYYY-MM-DD')
+            // const fileDateStr = fileDate.format('YYYY-MM-DD')
 
             // If the habit data is an array of strings (habit names)
             if (Array.isArray(habitData)) {

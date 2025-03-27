@@ -1,4 +1,4 @@
-import {Notice} from 'obsidian'
+import {App, Notice} from 'obsidian'
 import {PLUGIN_NAME} from './settings'
 import {findStreak, getDayOfWeek, getDateId, createDateFromFormat, pathToId, removeAllChildNodes} from './utils'
 import {HabitTrackerSettings} from './settings'
@@ -6,9 +6,9 @@ import {toggleHabit} from './fileops'
 
 export class HabitRenderer {
     settings: HabitTrackerSettings
-    app: any
+    app: App
 
-    constructor(settings: HabitTrackerSettings, app: any) {
+    constructor(settings: HabitTrackerSettings, app: App) {
         this.settings = settings
         this.app = app
     }
@@ -22,14 +22,14 @@ export class HabitRenderer {
     }
 
     renderRoot(parent: HTMLElement | undefined) {
-        if (typeof parent === 'undefined') {
+        if (typeof parent === 'undefined' || typeof this.settings.rootElement === 'undefined') {
+            console.log('undefined')
             return
         }
         const rootElement = parent.createEl('div', {
             cls: 'habit-tracker',
         })
 
-        //@ts-ignore
         rootElement.setAttribute('id', this.settings.rootElement.id)
         rootElement.addEventListener('click', (e) => {
             const target = e.target as HTMLDivElement
@@ -49,6 +49,7 @@ export class HabitRenderer {
 
     renderHeader(parent: HTMLElement | undefined) {
         if (typeof parent === 'undefined') {
+            console.log('undefined')
             return
         }
         const header = parent.createEl('div', {
